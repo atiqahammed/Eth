@@ -22,14 +22,11 @@ var job = new CronJob(
 	true,
 	// 'America/Los_Angeles'
 );
-// Use this if the 4th param is default value(false)
-// job.start()
 
 const client = new Discord.Client({
     intents: [
         Discord.Intents.FLAGS.GUILDS, 
         Discord.Intents.FLAGS.GUILD_MESSAGES,
-        // Discord.Intents.FLAGS.GUILD_MEMBERS,
         Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
         Discord.Intents.FLAGS.GUILD_BANS,
         Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
@@ -37,7 +34,11 @@ const client = new Discord.Client({
         Discord.Intents.FLAGS.GUILD_WEBHOOKS,
         Discord.Intents.FLAGS.GUILD_VOICE_STATES,
         Discord.Intents.FLAGS.GUILD_MESSAGE_TYPING,
+        Discord.Intents.FLAGS.DIRECT_MESSAGES,
+        Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+        Discord.Intents.FLAGS.DIRECT_MESSAGE_TYPING,
         Discord.Intents.FLAGS.GUILD_SCHEDULED_EVENTS,
+        // Discord.Intents.FLAGS.GUILD_MEMBERS
     ],
     partials: [
         'MESSAGE', 
@@ -47,78 +48,23 @@ const client = new Discord.Client({
     ]
 });
 
-/*
-
-| 'GUILDS'
-  | 'GUILD_MEMBERS'
-  | 'GUILD_BANS'
-  | 'GUILD_EMOJIS_AND_STICKERS'
-  | 'GUILD_INTEGRATIONS'
-  | 'GUILD_WEBHOOKS'
-  | 'GUILD_INVITES'
-  | 'GUILD_VOICE_STATES'
-  | 'GUILD_PRESENCES'
-  | 'GUILD_MESSAGES'
-  | 'GUILD_MESSAGE_REACTIONS'
-  | 'GUILD_MESSAGE_TYPING'
-  | 'DIRECT_MESSAGES'
-  | 'DIRECT_MESSAGE_REACTIONS'
-  | 'DIRECT_MESSAGE_TYPING'
-  | 'GUILD_SCHEDULED_EVENTS';
-
-*/
-
-// const Discord = require('discord.js');
-// const client = new Discord.Client();
-
+// ready
+/* Emitted when the client becomes ready to start working.    */
 // need to manage the initial setup here
 // database connection and other setup related task need to completed in the ready callback method.
 client.on('ready', async () => {
     console.log(`Discord bot is ready for proceed`);
 
-    // user id 984003862966960188
-
-    // guild id or server id 986561819525144636
-
-    // const test = client.guilds; //client.guilds.keyArray()
-    // console.log(test);
-
-    var server = client.guilds.cache.get('986561819525144636')//.members.cache.get('984003862966960188').;
-    // console.log(server);
-    // console.log('fatching members');
-    // const members = await server.members.fetch();
-    // console.log(members)
-
-    // let test = client.channels;
-    // console.log(test);
-    // // console.log(channel);
+    
 
     client.channels.fetch("986561819994886154").then(channel => {
-        channel.send("your message here")
-    })
+        channel.send("Bot has been started.")
+    });
+});
 
-    APP_STARTED = true;
+client.on('interactionCreate', (interaction) => {
     
-    // guild.members.cache.fetch().forEach(member => {
-
-    //     console.log(member)
-    // });
-
-
-
-    // client.members.fetch('984003862966960188').then((user) => {
-    //     console.log(user);
-    // }).catch(console.error);
-
-    // const guild = await client.guilds.fetch('986561819525144636')
-
-    // console.log(guild.members.cache.get('984003862966960188'));
-
-    // console.log(server.members.guild.members.guild.members.cache.get('984003862966960188'));
-    // let member = client.users//.cache.get('984003862966960188')
-    // console.log('member', member)
-    // const member = client//.guild//.members.cache.get('984003862966960188');
-    // console.log(member);
+	console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`);
 });
 
 client.on(`messageCreate`, async (message) => {
@@ -149,13 +95,8 @@ client.on(`messageCreate`, async (message) => {
             if(member) {
                 console.log('test member', member)
                 member.roles.remove('987237248955207700');
-                // guild.members.cache.fetch().forEach(member => {
-
-                //     console.log(member)
-                // });
             }
         }
-        
         return;
     };
 
@@ -178,26 +119,21 @@ client.on(`messageCreate`, async (message) => {
 });
 
 client.on(`messageReactionAdd`, (reaction, user) => {
-    console.log('tetsss');
-    //https://discord.com/channels/986561819525144636/986561819994886154/987237765672472607
+    console.log('reaction added');
+    // console.log('tetsss');
+    // //https://discord.com/channels/986561819525144636/986561819994886154/987237765672472607
 
-    console.log('userId',user.id);
+    // console.log('userId',user.id);
 
-    const { name } = reaction.emoji;
+    // const { name } = reaction.emoji;
 
-    if(name == '🍎') {
-        console.log('got apple');
-    }
+    // if(name == '🍎') {
+    //     console.log('got apple');
+    // }
 
 
-    console.log(name);
+    // console.log(name);
 });
-
-
-
-const token = ""
-var inviteLink = "";
-
 
 
 // channelDelete
@@ -512,6 +448,33 @@ oldRole        Role        The role before the update
 newRole        Role        The role after the update    */
 client.on("roleUpdate", function(oldRole, newRole){
     console.error(`a guild role is updated`);
+});
+
+// threadListSync
+/* Emitted whenever the client user gains access to a text or news channel that contains threads.
+PARAMETER      TYPE                              DESCRIPTION
+threads        <Snowflake, ThreadChannel>        The threads that were synced */
+client.on("threadListSync", function(threads){
+    console.error(`a thread list sync`);
+});
+
+// threadMemberUpdate
+/* Emitted whenever the client user's thread member is updated.
+PARAMETER        TYPE                DESCRIPTION
+oldMember        ThreadMember        The member before the update
+newMember        ThreadMember        The member after the update    */
+// client.on("threadMemberUpdate", function(oldMember, newMember){
+//     console.error(`a  thread member is updated`);
+// });
+
+
+// threadUpdate
+/* Emitted whenever a thread is updated.
+PARAMETER        TYPE                 DESCRIPTION
+oldThread        ThreadChannel        The thread before the update
+newThread        ThreadChannel        The thread after the update    */
+client.on("threadUpdate", function(oldThread, newThread){
+    console.error(`a guild thread is updated`);
 });
 
 // typingStart
